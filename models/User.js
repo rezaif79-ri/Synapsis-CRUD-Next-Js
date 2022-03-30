@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+let User;
 const UserSchema = new mongoose.Schema({
     first_name:{
         type: String,
@@ -28,7 +29,7 @@ const UserSchema = new mongoose.Schema({
         minlength: [8, 'Phone numbers are between 8-12 numbers'],
         match: [/\+?([ -]?\d+)+|\(\d+\)([ -]\d+)/, 'Please fill a valid phone numbers']
     }, 
-    email:{
+    address:{
         type: String,
         required: [true, 'Please fill a valid address'],
         trim: true,
@@ -36,4 +37,10 @@ const UserSchema = new mongoose.Schema({
 
 })
 
-module.exports = mongoose.model.User || mongoose.model('User', UserSchema);
+try{
+    User = mongoose.model('User')
+}catch(error){
+    User = mongoose.model('User', UserSchema)
+}
+
+module.exports = User;

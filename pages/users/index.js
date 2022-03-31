@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ListUser from "../../components/ListUser";
 
 export default function App() {
   const [firstName, setFirstName] = useState("");
@@ -8,7 +9,7 @@ export default function App() {
   const [address, setAddress] = useState("");
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mb-20">
       <div className="hidden sm:block" aria-hidden="true">
         <div className="py-5">
           <div className="border-t border-gray-200" />
@@ -164,7 +165,15 @@ export default function App() {
         </div>
       </div>
 
-      <div>This is the data table</div>
+      <div className="md:flex md:flex-col flex-wrap sm:container mx-auto sm:mx-5 lg:px-24">
+          <h3 className="md:text-2xl text-xl my-4 font-semibold">List of user data:</h3>
+          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
+            <ListUser />
+          </div>
+      </div>
+
+
+      
     </div>
   );
 }

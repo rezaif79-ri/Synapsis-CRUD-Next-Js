@@ -7,8 +7,8 @@ function ListUser({data, isLoading}) {
     <>
       {data.map((row) => {
         return (
-          <Link className="w-full" href={"/users/" + row._id}>
-            <div className="c-card block bg-indigo-200 shadow-md hover:shadow-xl rounded-lg overflow-hidden" >
+          <Link className="w-full" href={"/users/" + row._id} key={row._id}>
+            <div className="c-card block bg-indigo-200 shadow-md hover:shadow-xl rounded-lg overflow-hidden hover:cursor-pointer" >
               <div className="p-4">
                 <span className="inline-block px-2 py-1 leading-none bg-indigo-500 text-white rounded-full font-semibold uppercase tracking-wide text-xs">
                   ID: {row._id}

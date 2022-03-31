@@ -1,5 +1,5 @@
 
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Disclosure } from '@headlessui/react'
 import { BiMenu, BiXCircle } from 'react-icons/bi'
 import { useRouter } from 'next/router'
 import Link from 'next/link'

@@ -1,5 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListUser from "../../components/ListUser";
+
+ListUser.getInititialProps = () => {
+  fetch("api/users")
+    .then((res) => res.json())
+    .then((data) => {
+      setData(data.data, data.data);
+      setLoading(false);
+    });
+};
 
 export default function App() {
   const [firstName, setFirstName] = useState("");
@@ -7,6 +16,66 @@ export default function App() {
   const [email, setEmail] = useState("");
   const [number, setNumber] = useState("");
   const [address, setAddress] = useState("");
+
+  const [data, setData] = useState({});
+  const [isLoading, setLoading] = useState(true);
+
+  const [submit, setSubmit] = useState(false);
+
+  const handleFormCreate = (e) => {
+    e.preventDefault();
+    if (!submit) {
+      createUser();
+    }
+  };
+
+  const createUser = async () => {
+    try {
+      setSubmit(true);
+      const res = await fetch("api/users", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          phone: number,
+          email: email,
+          address: address,
+        }),
+      }).then(() => {
+        setSubmit(false);
+        setFirstName("");
+        setLastName("");
+        setNumber("");
+        setEmail("");
+        setAddress("");
+
+        fetchListUser();
+      });
+    } catch (error) {
+      setSubmit(false);
+    }
+  };
+
+  const fetchListUser = () => {
+    fetch("api/users")
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data.data);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    setLoading(true);
+    fetchListUser();
+  }, []);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!data) return <p>No data</p>;
 
   return (
     <div className="container mx-auto mb-20">
@@ -16,10 +85,10 @@ export default function App() {
         </div>
       </div>
 
-      <div className="mt-10 sm:mt-0 bg-gray-200">
+      <div className="mt-10 sm:mt-0 bg-gray-200 container">
         <div className="md:grid md:grid-cols-3 md:gap-6 p-5">
           <div className="md:col-span-1">
-            <div className="p-10 ">
+            <div className="p-10">
               <h3 className="text-xl font-medium leading-6 text-indigo-700">
                 Dashboard - User Data
               </h3>
@@ -30,7 +99,7 @@ export default function App() {
             </div>
           </div>
           <div className="mt-5 md:mt-0 md:col-span-2">
-            <form action="#" method="POST">
+            <form onSubmit={handleFormCreate}>
               <div className="shadow overflow-hidden sm:rounded-md">
                 <div className="px-4 py-5 bg-white sm:p-6">
                   <div className="grid grid-cols-6 gap-6">
@@ -46,6 +115,7 @@ export default function App() {
                         name="first-name"
                         id="first-name"
                         autoComplete="given-name"
+                        placeholder="John"
                         required={true}
                         maxLength={25}
                         value={firstName}
@@ -68,6 +138,7 @@ export default function App() {
                         name="last-name"
                         id="last-name"
                         autoComplete="family-name"
+                        placeholder="Dave"
                         required={true}
                         maxLength={25}
                         value={lastName}
@@ -93,6 +164,8 @@ export default function App() {
                         required={true}
                         maxLength={50}
                         value={email}
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+                        placeholder="name@domain.com"
                         onChange={(e) => {
                           setEmail(e.target.value);
                         }}
@@ -112,6 +185,7 @@ export default function App() {
                         id="phone-number"
                         name="phone-number"
                         value={number}
+                        placeholder="0123456789"
                         onChange={(e) => {
                           setNumber(e.target.value.replace(/\D/g, ""));
                         }}
@@ -136,6 +210,7 @@ export default function App() {
                         autoComplete="street-address"
                         required={true}
                         maxLength={100}
+                        placeholder="Jln. your place number city"
                         value={address}
                         onChange={(e) => {
                           setAddress(e.target.value);
@@ -150,7 +225,7 @@ export default function App() {
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
-                    Send
+                    Create
                   </button>
                 </div>
               </div>
@@ -166,14 +241,13 @@ export default function App() {
       </div>
 
       <div className="md:flex md:flex-col flex-wrap sm:container mx-auto sm:mx-5 lg:px-24">
-          <h3 className="md:text-2xl text-xl my-4 font-semibold">List of user data:</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3">
-            <ListUser />
-          </div>
+        <h3 className="md:text-2xl text-xl my-4 mx-5 font-bold text-indigo-800">
+          User Data
+        </h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-3 mx-5">
+          <ListUser data={data} isLoading={isLoading} />
+        </div>
       </div>
-
-
-      
     </div>
   );
 }

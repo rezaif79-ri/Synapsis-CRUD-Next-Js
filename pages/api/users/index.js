@@ -25,15 +25,17 @@ export default async (req, res) => {
             }
             break;
         case 'POST':
+            console.log(req.method)
             try {
+                console.log(req.body)
                 const userCreate = await User.create(req.body)
-
                 return res.status(201).json({
                     status: "OK", 
                     message: "User created",
                     data: userCreate.id
                 })
             } catch (error) {
+                console.log(error)
                 return res.status(500).json({
                     status: "OK",
                     message: error.message,

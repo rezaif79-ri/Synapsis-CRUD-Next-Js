@@ -15,7 +15,7 @@ async function connect(){
         }
     ).then((data) =>{
         connection.isConnected = data.connection._readyState;
-    });
+    }).catch((error) => console.log(error));
 }
 
 export default {connect};
